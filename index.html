@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ackley Hartnett | Meeting Scheduler</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #001f3f;
+      padding: 1rem;
+      text-align: center;
+    }
+    header img {
+      max-width: 250px;
+    }
+    main {
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      color: #001f3f;
+    }
+    .calendar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .day {
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      width: 300px;
+    }
+    .slot {
+      display: block;
+      margin: 5px 0;
+      padding: 0.5rem;
+      border: 1px solid #001f3f;
+      background-color: #f0f3f7;
+      cursor: pointer;
+      color: #001f3f;
+    }
+    .slot:hover {
+      background-color: #dce6f2;
+    }
+    #form-container {
+      display: none;
+      background-color: white;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 5;
+    }
+    input, select, button {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      width: 100%;
+    }
+    button {
+      background-color: #001f3f;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #003366;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Ackley Hartnett Logo">
+  </header>
+  <main>
+    <h1>Schedule a Meeting at CPHI Frankfurt 2025</h1>
+    <div class="calendar" id="calendar"></div>
+  </main>
+
+  <div id="overlay"></div>
+  <div id="form-container">
+    <form id="booking-form" action="https://formspree.io/f/xkgrdvpz" method="POST">
+      <h2>Book this slot</h2>
+      <input type="hidden" name="slot" id="slot-info">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <input type="text" name="company" placeholder="Your Company" required>
+      <select name="duration">
+        <option value="30">30 Minutes</option>
+        <option value="60">60 Minutes</option>
+      </select>
+      <button type="submit">Submit</button>
+      <button type="button" onclick="closeForm()">Cancel</button>
+    </form>
+  </div>
+
+  <script>
+    const dates = ['Oct 28', 'Oct 29', 'Oct 30'];
+    const hours = Array.from({length: 9}, (_, i) => i + 8); // 8 to 16 (5pm = 17)
+    const calendar = document.getElementById('calendar');
+
+    dates.forEach(date => {
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day';
+      dayDiv.innerHTML = `<h3>${date}</h3>`;
+
+      hours.forEach(hour => {
+        ['00', '30'].forEach(min => {
+          const time = `${hour}:${min}`;
+          const slotBtn = document.createElement('button');
+          slotBtn.className = 'slot';
+          slotBtn.textContent = `${date} – ${time}`;
+          slotBtn.onclick = () => openForm(`${date} – ${time}`);
+          dayDiv.appendChild(slotBtn);
+        });
+      });
+
+      calendar.appendChild(dayDiv);
+    });
+
+    function openForm(slotText) {
+      document.getElementById('slot-info').value = slotText;
+      document.getElementById('form-container').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+
+    function closeForm() {
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
